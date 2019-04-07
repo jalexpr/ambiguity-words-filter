@@ -37,18 +37,28 @@
  */
 package ru.textanalysis.tfwwt.awf;
 
-import ru.textanalysis.tfwwt.morphological.structures.storage.BearingPhraseList;
+import ru.textanalysis.tfwwt.morphological.structures.internal.sp.BearingPhraseSP;
+import ru.textanalysis.tfwwt.rules.compatibility.RelationshipHandler;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AWFilter {
-    
-    public static BearingPhraseList useAWFilterForBearingPhraseList(BearingPhraseList list) {
-        
-        list.forEach((word) -> {
-            if(word.isSingleValuedForm()) {
-                
+    private RelationshipHandler relationshipHandler = new RelationshipHandler();
+
+    /*
+    возвращает true, если бы хотя бы одна связь была установлена
+     */
+    public boolean useAWFilterForBearingPhraseList(BearingPhraseSP bearingPhraseSP) {
+        AtomicBoolean isCompatibility = new AtomicBoolean(false);
+        bearingPhraseSP.applyConsumer(words -> {
+            for(int i = 0; i < words.size(); i++) {
+                for(int j = i + 1; j < words.size(); j++) {
+                    if (relationshipHandler.establishRelation(j - i, words.get(i), words.get(j))) {
+                        isCompatibility.set(true);
+                    }
+                }
             }
         });
-        
-        return list;
+        return isCompatibility.get();
     }
 }
