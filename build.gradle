@@ -13,14 +13,14 @@ repositories {
 configurations {
     compile.extendsFrom morphologicalStructures
     compile.extendsFrom jMorfSdk
-    compile.extendsFrom gama
+    compile.extendsFrom rulesForCompatibility
 }
 
 dependencies {
-    compile  project(':Gama')
     compile  project(':JMorfSdk')
     compile  project(':MorphologicalStructures')
     compile  project(':TemplateWrapperClasses')
+    compile  project(':RulesForCompatibility')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

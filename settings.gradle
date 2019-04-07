@@ -10,8 +10,5 @@ project(':MorphologicalStructures').projectDir = new File('../MorphologicalStruc
 include 'TemplateWrapperClasses'
 project(':TemplateWrapperClasses').projectDir = new File('../TemplateWrapperClasses')
 
-include 'Gama'
-project(':Gama').projectDir = new File('../Gama')
-
-include 'Parser'
-project(':Parser').projectDir = new File('../Parser')
+include 'RulesForCompatibility'
+project(':RulesForCompatibility').projectDir = new File('../RulesForCompatibility')
