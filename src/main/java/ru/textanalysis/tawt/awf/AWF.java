@@ -35,14 +35,14 @@
  *
  * Благодарим Полицыных Сергея и Екатерину за оказание помощи в разработке библиотеки.
  */
-package ru.textanalysis.tfwwt.awf;
+package ru.textanalysis.tawt.awf;
 
-import ru.textanalysis.tfwwt.morphological.structures.internal.sp.BearingPhraseSP;
-import ru.textanalysis.tfwwt.rules.compatibility.RelationshipHandler;
+import ru.textanalysis.tawt.ms.internal.sp.BearingPhraseSP;
+import ru.textanalysis.tawt.rfc.RelationshipHandler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AWFilter {
+public class AWF {
     private RelationshipHandler relationshipHandler = new RelationshipHandler();
 
     /*
