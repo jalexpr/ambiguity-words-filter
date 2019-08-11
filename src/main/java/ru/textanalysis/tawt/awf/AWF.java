@@ -38,9 +38,12 @@
 package ru.textanalysis.tawt.awf;
 
 import ru.textanalysis.tawt.ms.internal.sp.BearingPhraseSP;
+import ru.textanalysis.tawt.ms.internal.sp.WordSP;
 import ru.textanalysis.tawt.rfc.RelationshipHandler;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class AWF {
     private RelationshipHandler relationshipHandler = new RelationshipHandler();
@@ -51,6 +54,16 @@ public class AWF {
     public boolean useAWFilterForBearingPhraseList(BearingPhraseSP bearingPhraseSP) {
         AtomicBoolean isCompatibility = new AtomicBoolean(false);
         bearingPhraseSP.applyConsumer(words -> {
+            List<WordSP> onceTos = words.stream().filter(WordSP::isOnceToS).collect(Collectors.toList());
+            for(int i = 0; i < words.size(); i++) {
+                if(onceTos.contains(words.get(i))) {
+                    for (int j = i + 1; j < words.size(); j++) {
+                        if (relationshipHandler.establishRelation(j - i, words.get(i), words.get(j))) {
+                            isCompatibility.set(true);
+                        }
+                    }
+                }
+            }
             for(int i = 0; i < words.size(); i++) {
                 for(int j = i + 1; j < words.size(); j++) {
                     if (relationshipHandler.establishRelation(j - i, words.get(i), words.get(j))) {
@@ -61,4 +74,6 @@ public class AWF {
         });
         return isCompatibility.get();
     }
+
+    public void init() {}
 }
