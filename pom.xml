@@ -4,25 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>awf</artifactId>
-    <name>ambiguity-words-filter</name>
-    <version>${version.tawt.awf}</version>
+    <name>TAWT Ambiguity Words Filter</name>
+    <artifactId>ambiguity-words-filter</artifactId>
+    <packaging>jar</packaging>
+    <version>${version.tawt.ambiguity-words-filter}</version>
 
     <parent>
-        <artifactId>tawt-parent</artifactId>
         <groupId>ru.textanalysis.tawt</groupId>
-        <version>0.0.1</version>
+        <artifactId>tawt-parent</artifactId>
+        <version>0.0.2</version>
     </parent>
 
     <dependencies>
         <!--        TAWT-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ms</artifactId>
+            <artifactId>morphological-structures</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>rfc</artifactId>
+            <artifactId>rules-for-compatibility</artifactId>
         </dependency>
 
         <!--            Logger-->
