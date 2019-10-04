@@ -42,8 +42,6 @@ import ru.textanalysis.tawt.ms.internal.sp.WordSP;
 import ru.textanalysis.tawt.rfc.RelationshipHandler;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class AWF {
     private RelationshipHandler relationshipHandler = new RelationshipHandler();
@@ -51,29 +49,53 @@ public class AWF {
     /*
     возвращает true, если бы хотя бы одна связь была установлена
      */
-    public boolean useAWFilterForBearingPhraseList(BearingPhraseSP bearingPhraseSP) {
-        AtomicBoolean isCompatibility = new AtomicBoolean(false);
+    public void applyAwfForBearingPhrase(BearingPhraseSP bearingPhraseSP) {
         bearingPhraseSP.applyConsumer(words -> {
-            List<WordSP> onceTos = words.stream().filter(WordSP::isOnceToS).collect(Collectors.toList());
-            for(int i = 0; i < words.size(); i++) {
-                if(onceTos.contains(words.get(i))) {
-                    for (int j = i + 1; j < words.size(); j++) {
-                        if (relationshipHandler.establishRelation(j - i, words.get(i), words.get(j))) {
-                            isCompatibility.set(true);
-                        }
-                    }
-                }
-            }
-            for(int i = 0; i < words.size(); i++) {
-                for(int j = i + 1; j < words.size(); j++) {
-                    if (relationshipHandler.establishRelation(j - i, words.get(i), words.get(j))) {
-                        isCompatibility.set(true);
-                    }
-                }
-            }
+            establishCompatibilityForPretext(words);
+            establishCompatibilityForOneForm(words);
+            establishCompatibilityForOneTos(words);
         });
-        return isCompatibility.get();
     }
 
-    public void init() {}
+    private void establishCompatibilityForPretext(List<WordSP> words) {
+        for (int i = words.size() - 1; -1 < i; i--) {
+            WordSP word = words.get(i);
+            if (word.havePretext()) {
+                for (int j = words.size() - 1; i < j; j--) {
+                    if (relationshipHandler.establishRelationForPretext(word, words.get(j))) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void establishCompatibilityForOneForm(List<WordSP> words) {
+        for (int i = words.size() - 1; -1 < i; i--) {
+            WordSP word = words.get(i);
+            if (word.isMonoSemantic()) {
+                for (int j = words.size() - 1; i < j; j--) {
+                    if (relationshipHandler.establishRelation(j - i, word, words.get(j))) {
+                        //todo log;
+                    }
+                }
+            }
+        }
+    }
+
+    private void establishCompatibilityForOneTos(List<WordSP> words) {
+        for (int i = words.size() - 1; -1 < i; i--) {
+            WordSP word = words.get(i);
+            if (word.isOneTos() && !word.isMonoSemantic()) {
+                for (int j = words.size() - 1; i < j; j--) {
+                    if (relationshipHandler.establishRelation(j - i, word, words.get(j))) {
+                        //todo log;
+                    }
+                }
+            }
+        }
+    }
+
+    public void init() {
+    }
 }
