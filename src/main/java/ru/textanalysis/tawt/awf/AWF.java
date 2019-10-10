@@ -39,22 +39,21 @@ package ru.textanalysis.tawt.awf;
 
 import ru.textanalysis.tawt.ms.internal.sp.BearingPhraseSP;
 import ru.textanalysis.tawt.ms.internal.sp.WordSP;
-import ru.textanalysis.tawt.rfc.RelationshipHandler;
+import ru.textanalysis.tawt.rfc.RulesForCompatibility;
 
 import java.util.List;
 
 public class AWF {
-    private RelationshipHandler relationshipHandler = new RelationshipHandler();
+    //todo сделать сингелтон
+    private RulesForCompatibility rules = new RulesForCompatibility();
 
-    /*
-    возвращает true, если бы хотя бы одна связь была установлена
-     */
     public void applyAwfForBearingPhrase(BearingPhraseSP bearingPhraseSP) {
         bearingPhraseSP.applyConsumer(words -> {
             establishCompatibilityForPretext(words);
             establishCompatibilityForOneForm(words);
             establishCompatibilityForOneTos(words);
         });
+
     }
 
     private void establishCompatibilityForPretext(List<WordSP> words) {
@@ -62,8 +61,8 @@ public class AWF {
             WordSP word = words.get(i);
             if (word.havePretext()) {
                 for (int j = words.size() - 1; i < j; j--) {
-                    if (relationshipHandler.establishRelationForPretext(word, words.get(j))) {
-                        break;
+                    if (rules.establishRelationForPretext(word, words.get(j))) {
+                        //todo log; и оценить с рекурсией
                     }
                 }
             }
@@ -75,7 +74,7 @@ public class AWF {
             WordSP word = words.get(i);
             if (word.isMonoSemantic()) {
                 for (int j = words.size() - 1; i < j; j--) {
-                    if (relationshipHandler.establishRelation(j - i, word, words.get(j))) {
+                    if (rules.establishRelation(j - i, word, words.get(j))) {
                         //todo log;
                     }
                 }
@@ -88,7 +87,7 @@ public class AWF {
             WordSP word = words.get(i);
             if (word.isOneTos() && !word.isMonoSemantic()) {
                 for (int j = words.size() - 1; i < j; j--) {
-                    if (relationshipHandler.establishRelation(j - i, word, words.get(j))) {
+                    if (rules.establishRelation(j - i, word, words.get(j))) {
                         //todo log;
                     }
                 }
