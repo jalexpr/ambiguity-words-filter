@@ -37,23 +37,36 @@
  */
 package ru.textanalysis.tawt.awf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.textanalysis.tawt.ms.interfaces.awf.IAWF;
 import ru.textanalysis.tawt.ms.internal.sp.BearingPhraseSP;
 import ru.textanalysis.tawt.ms.internal.sp.WordSP;
 import ru.textanalysis.tawt.rfc.RulesForCompatibility;
 
 import java.util.List;
 
-public class AWF {
+public class AWF implements IAWF {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     //todo сделать сингелтон
     private RulesForCompatibility rules = new RulesForCompatibility();
 
-    public void applyAwfForBearingPhrase(BearingPhraseSP bearingPhraseSP) {
-        bearingPhraseSP.applyConsumer(words -> {
-            establishCompatibilityForPretext(words);
-            establishCompatibilityForOneForm(words);
-            establishCompatibilityForOneTos(words);
-        });
+    @Override
+    public void init() {
+        rules.init();
+        log.debug("AWF is initialized!");
+    }
 
+    @Override
+    public void applyAwfForBearingPhrase(BearingPhraseSP bearingPhraseSP) {
+        if (bearingPhraseSP != null) {
+            bearingPhraseSP.applyConsumer(words -> {
+                establishCompatibilityForPretext(words);
+                establishCompatibilityForOneForm(words);
+                establishCompatibilityForOneTos(words);
+            });
+        }
     }
 
     private void establishCompatibilityForPretext(List<WordSP> words) {
@@ -93,8 +106,5 @@ public class AWF {
                 }
             }
         }
-    }
-
-    public void init() {
     }
 }
